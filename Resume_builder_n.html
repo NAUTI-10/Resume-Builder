@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(to bottom right, #f3f4f6, #ffffff);
+      margin: 0;
+      padding: 0;
+      color: #111827;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 30px;
+    }
+
+    .progress-bar {
+      background: #e5e7eb;
+      border-radius: 8px;
+      height: 8px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress {
+      background: #3b82f6;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-section {
+      display: none;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+
+    button:disabled {
+      background-color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .resume-preview {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+
+    .step-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 15px 0;
+    }
+
+    .step-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #d1d5db;
+      transition: background 0.3s, width 0.3s;
+    }
+
+    .step-dot.active {
+      background: #3b82f6;
+      width: 24px;
+      border-radius: 8px;
+    }
+
+    .skills span {
+      display: inline-block;
+      background: #e0e7ff;
+      color: #1e3a8a;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin: 3px;
+    }
+
+    @media print {
+      .no-print {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="no-print">
+      <h1>Resume Builder</h1>
+      <p>Create your professional resume in minutes</p>
+
+      <div>
+        <h3 id="step-title">Step 1 of 5: Personal Info</h3>
+        <div class="progress-bar"><div class="progress" id="progress" style="width: 20%;"></div></div>
+      </div>
+
+      <div class="card">
+        <form id="resumeForm">
+          <!-- Step 1 -->
+          <div class="form-section active" data-step="1">
+            <h3>Personal Information</h3>
+            <input type="text" id="fullName" placeholder="Full Name">
+            <input type="email" id="email" placeholder="Email">
+            <input type="text" id="phone" placeholder="Phone">
+            <input type="text" id="location" placeholder="Location">
+            <input type="text" id="linkedin" placeholder="LinkedIn URL">
+            <input type="text" id="portfolio" placeholder="Portfolio/Website">
+          </div>
+
+          <!-- Step 2 -->
+          <div class="form-section" data-step="2">
+            <h3>Work Experience</h3>
+            <textarea id="experience" rows="4" placeholder="List your work experiences..."></textarea>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="form-section" data-step="3">
+            <h3>Education</h3>
+            <textarea id="education" rows="3" placeholder="List your education details..."></textarea>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="form-section" data-step="4">
+            <h3>Skills</h3>
+            <input type="text" id="skills" placeholder="Comma separated skills (e.g. HTML, CSS, JS)">
+          </div>
+
+          <!-- Step 5 -->
+          <div class="form-section" data-step="5">
+            <h3>Summary</h3>
+            <textarea id="summary" rows="4" placeholder="Write a short professional summary..."></textarea>
+          </div>
+        </form>
+
+        <div class="step-indicators" id="stepDots"></div>
+
+        <div class="nav-buttons">
+          <button id="prevBtn" disabled>Previous</button>
+          <button id="nextBtn">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="resume-preview" id="preview">
+      <h2 id="pName">Your Name</h2>
+      <p id="pContact">Email | Phone | Location | LinkedIn | Portfolio</p>
+      <hr style="margin:15px 0; border-color:#ddd;">
+      <div>
+        <h3>Summary</h3>
+        <p id="pSummary"></p>
+      </div>
+      <div>
+        <h3>Experience</h3>
+        <p id="pExperience"></p>
+      </div>
+      <div>
+        <h3>Education</h3>
+        <p id="pEducation"></p>
+      </div>
+      <div>
+        <h3>Skills</h3>
+        <div id="pSkills" class="skills"></div>
+      </div>
+      <div style="margin-top:20px;" class="no-print">
+        <button onclick="window.print()">Download / Print</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    const stepTitle = document.getElementById('step-title');
+    const progressBar = document.getElementById('progress');
+    const sections = document.querySelectorAll('.form-section');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const stepDots = document.getElementById('stepDots');
+
+    // create dots
+    for (let i = 1; i <= totalSteps; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('step-dot');
+      if (i === 1) dot.classList.add('active');
+      stepDots.appendChild(dot);
+    }
+
+    function updateStep() {
+      sections.forEach(sec => {
+        sec.classList.toggle('active', parseInt(sec.dataset.step) === currentStep);
+      });
+
+      stepTitle.textContent = `Step ${currentStep} of ${totalSteps}: ${
+        ["Personal Info", "Work Experience", "Education", "Skills", "Summary"][currentStep - 1]
+      }`;
+
+      progressBar.style.width = (currentStep / totalSteps) * 100 + "%";
+
+      prevBtn.disabled = currentStep === 1;
+      nextBtn.textContent = currentStep === totalSteps ? "Download" : "Next";
+
+      document.querySelectorAll('.step-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index + 1 === currentStep);
+      });
+    }
+
+    function updatePreview() {
+      document.getElementById('pName').textContent = document.getElementById('fullName').value || "Your Name";
+      document.getElementById('pContact').textContent = [
+        document.getElementById('email').value,
+        document.getElementById('phone').value,
+        document.getElementById('location').value,
+        document.getElementById('linkedin').value,
+        document.getElementById('portfolio').value
+      ].filter(Boolean).join(" | ") || "Email | Phone | Location | LinkedIn | Portfolio";
+
+      document.getElementById('pSummary').textContent = document.getElementById('summary').value;
+      document.getElementById('pExperience').textContent = document.getElementById('experience').value;
+      document.getElementById('pEducation').textContent = document.getElementById('education').value;
+
+      const skillsArray = document.getElementById('skills').value.split(",").map(s => s.trim()).filter(Boolean);
+      document.getElementById('pSkills').innerHTML = skillsArray.map(s => `<span>${s}</span>`).join("");
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateStep();
+      } else {
+        updatePreview();
+        window.print();
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 1) {
+        currentStep--;
+        updateStep();
+      }
+    });
+
+    document.querySelectorAll('input, textarea').forEach(el => {
+      el.addEventListener('input', updatePreview);
+    });
+
+    updatePreview();
+  </script>
+</body>
+</html>
